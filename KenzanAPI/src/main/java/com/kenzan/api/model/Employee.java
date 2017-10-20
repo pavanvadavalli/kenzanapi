@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.Hashtable;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kenzan.api.dao.couchdb.util.CustomJsonDateDeserializer;
+import com.kenzan.api.dao.couchdb.util.CustomJsonDateSerializer;
 
 public class Employee  {
 	/*
@@ -23,9 +25,11 @@ public class Employee  {
 	    public String middleInitial;
 	    public String lastName;
 	    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+	    @JsonSerialize(using= CustomJsonDateSerializer.class)
 	    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 	    public Date dateOfBirth;
 	    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+	    @JsonSerialize(using= CustomJsonDateSerializer.class)
 	    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 	    public Date dateOfEmployement;
 	    public EmployeeStatus status;
