@@ -33,8 +33,8 @@
     <couchdb:instance id="ec2CouchDBInstance" properties="couchdbProperties" />
    
     <couchdb:database id="employeeCouchdb" name="kaizenemployee" instance-ref="ec2CouchDBInstance" />
-	<bean id="initialDataLoader" class="org.ektorp.spring.InitialDataLoader" autowire="byType" init-method="loadData"/>
 		
+	<bean id="initialDataLoader" class="org.ektorp.spring.InitialDataLoader" autowire="byType" init-method="loadInitialData"/>
         
     <cxf:bus>
         <cxf:features>

@@ -1,0 +1,50 @@
+[
+   {
+   "_id":"kezansampleappID1",
+    "employeeId": 1508375033521,
+    "firstName": "pavan",
+    "middleInitial": "kumar",
+    "lastName": "vadavalli",
+    "status": "ACTIVE",
+    "employeeAdditionalInfo": {
+      "key": "BasedIn",
+      "value": "Singapore"
+    }
+  },
+   {
+   "_id":"kezansampleappID2",
+    "employeeId": 1508375033522,
+    "firstName": "Anon2",
+    "middleInitial": "NotKnown2",
+    "lastName": "Anon2",
+    "status": "ACTIVE",
+    "employeeAdditionalInfo": {
+      "key": "BasedIn",
+      "value": "Shanghai"
+    }
+  },
+  {
+  	"_id":"kezansampleappID3",
+    "employeeId": 1508375033523,
+    "firstName": "Anon3",
+    "middleInitial": "NotKnown3",
+    "lastName": "Anon3",
+    "status": "ACTIVE",
+    "employeeAdditionalInfo": {
+      "key": "BasedIn",
+      "value": "London"
+    }
+  },
+   {
+    "employeeId": 1508375033524,
+    "firstName": "Anon4",
+    "middleInitial": "NotKnown4",
+    "lastName": "Anon4",
+    "status": "ACTIVE",
+    "employeeAdditionalInfo": {
+      "key": "BasedIn",
+      "value": "Denver"
+    }
+  }
+  ]
+ 

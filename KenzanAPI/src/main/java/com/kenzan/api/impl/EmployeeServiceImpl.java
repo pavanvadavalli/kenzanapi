@@ -2,8 +2,6 @@ package com.kenzan.api.impl;
 
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.kenzan.api.EmployeeService;
 import com.kenzan.api.dao.EmployeeDAO;
 import com.kenzan.api.model.Employee;
-import com.kenzan.api.model.EmployeeStatus;
 
 @Service("employeeservice")
 public class EmployeeServiceImpl implements EmployeeService{
