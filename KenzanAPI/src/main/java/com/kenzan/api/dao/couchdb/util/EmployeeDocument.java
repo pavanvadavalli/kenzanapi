@@ -31,8 +31,10 @@ public class EmployeeDocument extends CouchDbDocument {
 	    public String middleInitial;
 	    public String lastName;
 	    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+	    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 	    public Date dateOfBirth;
 	    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+	    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 	    public Date dateOfEmployement;
 	    public EmployeeStatus status;
 	    public Hashtable<String, String> employeeAdditionalInfo;
