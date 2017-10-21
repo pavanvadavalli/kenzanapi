@@ -1,46 +1,51 @@
 [
    {
-   "_id":"kezansampleappID1",
-    "employeeId": 1508375033521,
-    "firstName": "pavan",
-    "middleInitial": "kumar",
-    "lastName": "vadavalli",
+    "_id":"MIG-kezansampleappID5",
+     "firstName": "pavan5",
+    "middleInitial": "kumar5",
+    "lastName": "vadavalli5",
     "status": "ACTIVE",
+    "dateOfBirth":"06-15-1980",
+    "dateOfEmployement":"10-21-2017",
     "employeeAdditionalInfo": {
       "key": "BasedIn",
       "value": "Singapore"
     }
   },
    {
-   "_id":"kezansampleappID2",
-    "employeeId": 1508375033522,
-    "firstName": "Anon2",
-    "middleInitial": "NotKnown2",
+   "_id":"MIG-kezansampleappID6",
+    "firstName": "Anon6",
+    "middleInitial": "NotKnown6",
     "lastName": "Anon2",
     "status": "ACTIVE",
+    "dateOfBirth":"06-15-1980",
+    "dateOfEmployement":"10-21-2017",
     "employeeAdditionalInfo": {
       "key": "BasedIn",
       "value": "Shanghai"
     }
   },
   {
-  	"_id":"kezansampleappID3",
-    "employeeId": 1508375033523,
-    "firstName": "Anon3",
-    "middleInitial": "NotKnown3",
+  	"_id":"MIG-kezansampleappID7",
+    "firstName": "Anon7",
+    "middleInitial": "NotKnown7",
     "lastName": "Anon3",
     "status": "ACTIVE",
+    "dateOfBirth":"06-15-1980",
+    "dateOfEmployement":"10-21-2017",
     "employeeAdditionalInfo": {
       "key": "BasedIn",
       "value": "London"
     }
   },
    {
-    "employeeId": 1508375033524,
-    "firstName": "Anon4",
-    "middleInitial": "NotKnown4",
+    "_id":"MIG-kezansampleappID8",
+    "firstName": "Anon8",
+    "middleInitial": "NotKnown8",
     "lastName": "Anon4",
     "status": "ACTIVE",
+    "dateOfBirth":"06-15-1980",
+    "dateOfEmployement":"10-21-2017",
     "employeeAdditionalInfo": {
       "key": "BasedIn",
       "value": "Denver"

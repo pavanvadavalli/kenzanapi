@@ -10,14 +10,14 @@ public final class EmployeeDataTransformerService {
 		if(document!=null)
 		{
 			Employee emp = new Employee();
-			emp.employeeId= document.employeeId;
+			emp.employeeId= document.getId();
 			emp.firstName=document.firstName;
 			emp.lastName=document.lastName;
 			emp.middleInitial=document.middleInitial;
 			emp.dateOfBirth=document.dateOfBirth;
 			emp.dateOfEmployement=document.dateOfEmployement;
 			emp.status=document.status;
-			emp.employeeAdditionalInfo=emp.employeeAdditionalInfo;
+			emp.employeeAdditionalInfo=document.employeeAdditionalInfo;
 			
 			return emp;
 		}
@@ -29,7 +29,7 @@ public final class EmployeeDataTransformerService {
 		if(employee!=null)
 		{
 			EmployeeDocument doc = new EmployeeDocument();
-			doc.employeeId=employee.employeeId;
+			doc.setId(employee.employeeId);
 			doc.firstName=employee.firstName;
 			doc.lastName=employee.lastName;
 			doc.middleInitial=employee.middleInitial;

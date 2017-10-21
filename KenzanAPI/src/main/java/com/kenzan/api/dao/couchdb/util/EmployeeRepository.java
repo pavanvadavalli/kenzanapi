@@ -2,30 +2,28 @@ package com.kenzan.api.dao.couchdb.util;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+
 
 import org.ektorp.CouchDbConnector;
+import org.ektorp.UpdateConflictException;
 import org.ektorp.dataload.DataLoader;
-import org.ektorp.dataload.DefaultDataLoader;
 import org.ektorp.support.CouchDbRepositorySupport;
 import org.ektorp.support.GenerateView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Component("EmployeeRepo")
 public class EmployeeRepository extends CouchDbRepositorySupport<EmployeeDocument> implements DataLoader{
 	
 	private final static String[] INITIAL_DATA_PATH = {"classpath:/initLoad.json"};
+	private static final Logger LOG = LoggerFactory.getLogger(EmployeeRepository.class);
 	CouchDbConnector employeeDB;
 
 	 @Autowired
@@ -45,42 +43,39 @@ public class EmployeeRepository extends CouchDbRepositorySupport<EmployeeDocumen
 	 	 
 	 public void loadInitialData(Reader in) {
 		
-		 System.out.println("Pavan: loadINitial Data called in ");
-			Set<String> allIds = new HashSet<String>(employeeDB.getAllDocIds());
-		System.out.println("Printing ID's from Database");
-			for(String  currenId: allIds)
-			{
-				System.out.println(currenId);
-				
-			}
-			
-			System.out.println("All Database ID's printed");
-			ObjectMapper objectMapper= new ObjectMapper();
-			EmployeeDocument[] employeeDocs;
-			try {
+		 LOG.info("***************Triggering Initial Data Load ****************");
+		  ObjectMapper objectMapper= new ObjectMapper();
+		 EmployeeDocument[] employeeDocs;
+		 try {
 				employeeDocs = objectMapper.readValue(in, EmployeeDocument[].class);
+				LOG.info("Number of EMployee Docs to insert "+employeeDocs.length);
+				for(EmployeeDocument eDoc: employeeDocs){
+					try
+						{
+							LOG.info("adding "+ eDoc.getId()+ "to database");
+							db.create(eDoc);
+							//LOG.info("Revision of the doc"+eDoc.revision);
+						}
+						catch (UpdateConflictException e) {
+							LOG.error("Error inserting to DB with ID"+eDoc.getId(), e);
+							}
+					
+			}
+				LOG.info("*************** Initial Data Load complete successfully****************");
+		 }catch(IOException io)
+		 {
+			 LOG.error("Cant parse the JSON file for initiload, Skipping the load",io); 
+		}
 			
-				
-			for (EmployeeDocument eDoc:employeeDocs) {
-				{
-					System.out.println("adding {} to database"+ eDoc.getId());
-					 db.create(eDoc);
-				}
-			}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-	        System.out.println("Pavan: loadINitial load funtion finished");
-	    }
+			
+	 }
 	  
 	    public String[] getDataLocations() {
 	        return INITIAL_DATA_PATH;
 	    }
 
 	    /**
-	    * Is called when all DataLoaders in the system has loaded it´s data.
+	    * Callback for all loaded Data
 	    */
 	    public void allDataLoaded() {
 	    	System.out.println("Init Data loaded");

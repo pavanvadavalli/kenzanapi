@@ -23,16 +23,15 @@
 	<context:component-scan base-package="com.kenzan.api" />
 	<context:component-scan base-package="com.kenzan.api.dao.couchdb.util"/>
 	<context:component-scan base-package="com.kenzan.api.dao.impl"/>
-	<context:component-scan base-package="org.ektorp.spring"/>
+	<!-- context:component-scan base-package="org.ektorp.spring"/-->
 	
 	
 	 <util:properties id="couchdbProperties" location="classpath:/couchdb.properties"/>
 
     <!-- couchdb:instance id="localCouchDBInstance" url="http://localhost:5984" properties="couchdbProperties" /-->
-    
     <couchdb:instance id="ec2CouchDBInstance" properties="couchdbProperties" />
-   
     <couchdb:database id="employeeCouchdb" name="kaizenemployee" instance-ref="ec2CouchDBInstance" />
+	
 	<bean id="initialDataLoader" class="org.ektorp.spring.InitialDataLoader" autowire="byType" init-method="loadData"/>
 		
         

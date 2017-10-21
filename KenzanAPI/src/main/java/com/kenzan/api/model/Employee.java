@@ -20,7 +20,7 @@ public class Employee  {
 	 * DateOfEmployment - Employee start date
 	 * Status - ACTIVE or INACTIVE
 	 */
-	    public long employeeId;
+	    public String employeeId;
 	    public String firstName;
 	    public String middleInitial;
 	    public String lastName;

@@ -1,8 +1,6 @@
 package com.kenzan.api.impl;
 
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 		
 		public Employee getEmployee(String id) {
-			return employeeDao.getEmployeeDetailsByInternalId(id);
+			return employeeDao.getEmployeeDetailsById(id);
 		}
 		
 		public Employee[] getAllEmployees() {
@@ -40,11 +38,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 		}
 
 		@Override
-		public long addEmployee(Employee employee) {
-			 Date currentDate=new Date();
-			  employee.employeeId=currentDate.getTime();
-			employeeDao.createEmployee(employee);
-			return employee.employeeId;
+		public String addEmployee(Employee employee) {
+			return employeeDao.createEmployee(employee);
 		}
 
 	}

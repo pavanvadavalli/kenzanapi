@@ -25,6 +25,6 @@ public interface EmployeeService {
 	
 	@PUT
 	@Path("/")
-	public long addEmployee(Employee employee);
+	public String addEmployee(Employee employee);
 
 }
