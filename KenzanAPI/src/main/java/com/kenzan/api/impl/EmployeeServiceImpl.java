@@ -1,16 +1,18 @@
 package com.kenzan.api.impl;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.kenzan.api.EmployeeService;
+
 import com.kenzan.api.dao.EmployeeDAO;
-import com.kenzan.api.dao.couchdb.util.EmployeeDocument;
-import com.kenzan.api.dao.couchdb.util.EmployeeRepository;
+
 import com.kenzan.api.model.Employee;
 import com.kenzan.api.model.EmployeeStatus;
 import com.kenzan.api.model.EmployeeToUpdate;
@@ -19,8 +21,7 @@ import com.kenzan.api.model.EmployeeToUpdate;
 public class EmployeeServiceImpl implements EmployeeService{
 	
 	private EmployeeDAO employeeDao;
-	private static final Logger LOG = LoggerFactory.getLogger(EmployeeServiceImpl.class);
-	
+		
 	@Autowired
 	public EmployeeServiceImpl(@Qualifier("EmployeeDAOService")EmployeeDAO dao) 
 	{
@@ -30,7 +31,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 	
 	@Override
 	public Employee getEmployee(String id) {
-		return employeeDao.getEmployeeDetailsById(id);
+		Employee emp=employeeDao.getEmployeeDetailsById(id);
+		if(emp==null) throw new WebApplicationException(Response.Status.NOT_FOUND);
+		return emp;
 	}
 		
 	@Override
@@ -40,21 +43,30 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 	@Override
 	public String addEmployee(Employee employee) {
-		employee.status=EmployeeStatus.ACTIVE;
-		return employeeDao.createEmployee(employee);
+		
+		BusinessValidationResponse validationResponse=EmployeeServiceBusinessValidation.validateCreateEmloyee(employee);
+		if(validationResponse.isValidationSuccessful())
+		{
+			employee.status=EmployeeStatus.ACTIVE;		
+			return employeeDao.createEmployee(employee);
+		}
+		else throw new WebApplicationException(validationResponse.getErrorMessages(), Response.Status.BAD_REQUEST);
 	}
 
 	@Override
 	public void removeEmployee(String employeeId) {
-		employeeDao.deActivateEmployee(employeeId);
+		boolean removeSuccessful=employeeDao.deActivateEmployee(employeeId);
+		if(!removeSuccessful) throw new WebApplicationException(Response.Status.NOT_FOUND);
+		
 	}
-
 
 	@Override
 	public void updateEmployee(String employeeId,EmployeeToUpdate employee) {
-		
-		employeeDao.updateEmployee(employeeId,employee);
-		
+		BusinessValidationResponse validationResponse=EmployeeServiceBusinessValidation.validateUpdateEmloyee(employee);
+		if(validationResponse.isValidationSuccessful())
+		{
+			employeeDao.updateEmployee(employeeId,employee);
+		}
+		else throw new WebApplicationException(validationResponse.getErrorMessages(), Response.Status.BAD_REQUEST);
 	}
-
 }

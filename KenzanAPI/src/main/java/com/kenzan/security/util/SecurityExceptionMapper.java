@@ -14,9 +14,7 @@ public class SecurityExceptionMapper implements ExceptionMapper<AccessDeniedExce
 
     public Response toResponse(AccessDeniedException exception) {
     	 LOG.info("Access Denied Exception recieved for ",exception);
-    	 System.out.println("Access Denied exception recieved");
-    	 exception.printStackTrace(System.out);
-        return Response.status(Response.Status.FORBIDDEN).build();
+    	 return Response.status(Response.Status.FORBIDDEN).build();
     }
 
 }

@@ -3,7 +3,6 @@ package com.kenzan.api.dao.couchdb.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ektorp.UpdateConflictException;
 
 import com.kenzan.api.model.Employee;
 import com.kenzan.api.model.EmployeeToUpdate;

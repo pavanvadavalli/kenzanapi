@@ -1,15 +1,10 @@
-<?xml version="1.1" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:cxf="http://cxf.apache.org/core"
-	xmlns:jaxws="http://cxf.apache.org/jaxws" 
-	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:util="http://www.springframework.org/schema/util" 
-	xmlns:couchdb="http://www.ektorp.org/schema/couchdb"
-	xmlns:aop="http://www.springframework.org/schema/aop" 
-	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:couchdb="http://www.ektorp.org/schema/couchdb"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="
 			http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -19,17 +14,17 @@
     		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
     		http://www.ektorp.org/schema/couchdb http://www.ektorp.org/schema/couchdb/couchdb.xsd
     		http://www.springframework.org/schema/aop  http://www.springframework.org/schema/aop/spring-aop.xsd 
-    		http://www.springframework.org/schema/security  http://www.springframework.org/schema/security/spring-security-4.2.xsd" >
+    		http://www.springframework.org/schema/security  http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-
+<!-- Components and Services that needs to be scanned and initialized by Spring  -->
 	<context:component-scan base-package="com.kenzan.api" />
 	<context:component-scan base-package="com.kenzan.api.dao.couchdb.util" />
 	<context:component-scan base-package="com.kenzan.api.dao.impl" />
-	<context:component-scan base-package="org.ektorp.spring" />
 	<context:component-scan base-package="com.kenzan.security.util" />
 
+<!-- CouchDB integration related bean definitions -->
 	<util:properties id="couchdbProperties" location="classpath:/couchdb.properties" />
 	<!-- couchdb:instance id="localCouchDBInstance" url="http://localhost:5984" 
 		properties="couchdbProperties" / -->
@@ -44,47 +39,39 @@
 	</cxf:bus>
 
 	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
-	<bean id="KenzanAuthenticationProvider" class="com.kenzan.security.util.KenzanAPIAuthenticationProvider">
 	
-	<security:global-method-security secured-annotations="enabled">
-        <security:protect-pointcut expression="execution(* com.kenzan.api.EmployeeService.removeEmployee(*))" access="ROLE_ADMIN"/>
-    </security:global-method-security>
-    <security:http auto-config="true">
-        <security:http-basic/>
-        <security:csrf disabled="true"/>
-    </security:http>
-    <security:authentication-manager>
-      <security:authentication-provider ref="CustomAuthenticationProvider"/>
-    </security:authentication-manager>
-		
-	<jaxrs:server id="employeeMS" address="/employee">
-		<jaxrs:features>
-			<cxf:logging />
-		</jaxrs:features>
-		<jaxrs:serviceBeans>
-			<ref bean="employeeservice" />
-		</jaxrs:serviceBeans>
-		<jaxrs:providers>
-			<ref bean="jsonProvider" />
-            <bean class="com.kenzan.security.util.SecurityExceptionMapper"/>
-		</jaxrs:providers>
-	</jaxrs:server>
+	<!-- Authentication Bean to externalize Authentication and Authorization -->
+	<bean id="KenzanAuthenticationProvider"	class="com.kenzan.security.util.KenzanAPIAuthenticationProvider"/>
+	
 
-<!-- Validation feature beans which is currently not working  
-	<bean id="exceptionMapper" class="org.apache.cxf.jaxrs.validation.ValidationExceptionMapper" />
-	<bean id="validationProvider" class="org.apache.cxf.validation.BeanValidationProvider" />
-	
-	<bean id="validationInInterceptor"	class="org.apache.cxf.jaxrs.validation.JAXRSBeanValidationInInterceptor">
-		<property name="provider" ref="validationProvider" />
-	</bean>
-	<bean id="validationInvoker" class="org.apache.cxf.jaxrs.validation.JAXRSBeanValidationInvoker"></bean>
-	
-	<jaxrs:inInterceptors>
-			<ref bean="validationInInterceptor" />
-		</jaxrs:inInterceptors>
-		<jaxrs:invoker>
-			<ref bean="validationInvoker" />
-		</jaxrs:invoker>
-		<ref bean="exceptionMapper" /-->
+<!-- Security definitions for Employee Service  -->
+		<security:global-method-security
+			secured-annotations="enabled">
+			<security:protect-pointcut
+				expression="execution(* com.kenzan.api.EmployeeService.removeEmployee(*))"
+				access="ROLE_ADMIN" />
+		</security:global-method-security>
+		<security:http auto-config="true">
+			<security:http-basic />
+			<security:csrf disabled="true" />
+		</security:http>
+		<security:authentication-manager>
+			<security:authentication-provider
+				ref="KenzanAuthenticationProvider" />
+		</security:authentication-manager>
+
+<!--  The Employee Service Jax RS definitions -->
+		<jaxrs:server id="employeeMS" address="/employee">
+			<jaxrs:features>
+				<cxf:logging />
+			</jaxrs:features>
+			<jaxrs:serviceBeans>
+				<ref bean="employeeservice" />
+			</jaxrs:serviceBeans>
+			<jaxrs:providers>
+				<ref bean="jsonProvider" />
+				<bean class="com.kenzan.security.util.SecurityExceptionMapper" />
+			</jaxrs:providers>
+		</jaxrs:server>
 
 </beans>

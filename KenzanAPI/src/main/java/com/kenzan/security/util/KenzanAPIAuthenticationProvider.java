@@ -1,7 +1,6 @@
 package com.kenzan.security.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -42,7 +41,11 @@ public class KenzanAPIAuthenticationProvider implements AuthenticationProvider {
 		            return auth;
 		        }
 
-		        else      throw new KenzanAuthenticationException("userName:"+userName+" Not recongnised");
+		        else  
+		        {
+		        	logger.info("userName:"+userName+" Not recongnised..Authentication failed");
+		        	throw new KenzanAuthenticationException("userName:"+userName+" Not recongnised");
+		        }
 		    }
 
 		    @Override

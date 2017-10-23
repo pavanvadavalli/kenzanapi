@@ -12,6 +12,7 @@ import org.ektorp.support.CouchDbRepositorySupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,10 @@ public class EmployeeRepository extends CouchDbRepositorySupport<EmployeeDocumen
 	
 	private final static String[] INITIAL_DATA_PATH = {"classpath:/initLoad.json"};
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeRepository.class);
+	
+	@Value("#{systemProperties['jsonLoad'] ?: 'NotAvailable'}")
+	private String dataloadFile;
+	
 	CouchDbConnector employeeDB;
 
 	 @Autowired

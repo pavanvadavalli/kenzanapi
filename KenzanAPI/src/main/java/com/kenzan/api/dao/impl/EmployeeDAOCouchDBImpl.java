@@ -26,7 +26,7 @@ public class EmployeeDAOCouchDBImpl implements EmployeeDAO {
 	private static final AtomicInteger sequenceNumber=new AtomicInteger(1);
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeDAOCouchDBImpl.class);
 	
-	@Value("#{systemProperties['NodeID'] ?: ShouldntHappen}")
+	@Value("#{systemProperties['NodeID'] ?: 'ShouldntHappen'}")
 	private String nodeID;
 	
 	@Autowired
@@ -59,14 +59,18 @@ public class EmployeeDAOCouchDBImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public void deActivateEmployee(String employeeId) {
+	public boolean deActivateEmployee(String employeeId) {
 		EmployeeDocument eDoc = employeeRepo.get(employeeId);
 		if (eDoc!= null)
 		{	eDoc.status=EmployeeStatus.INACTIVE;
 		 	employeeRepo.update(eDoc);
+		 	return true;
 		}
 		else 
-			 LOG.info("No action taken to deactivate the employee as the employee is not existing or inactive already: "+employeeId);
+		{ 
+			LOG.info("No action taken to deactivate the employee as the employee is not existing or inactive already: "+employeeId);
+			return false;
+		}
 		
 	}
 
