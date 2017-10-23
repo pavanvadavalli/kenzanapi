@@ -1,8 +1,11 @@
 package com.kenzan.api.dao.impl;
 
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +16,18 @@ import com.kenzan.api.dao.couchdb.util.EmployeeDataTransformerService;
 import com.kenzan.api.dao.couchdb.util.EmployeeDocument;
 import com.kenzan.api.dao.couchdb.util.EmployeeRepository;
 import com.kenzan.api.model.Employee;
+import com.kenzan.api.model.EmployeeStatus;
+import com.kenzan.api.model.EmployeeToUpdate;
 
 @Service("EmployeeDAOService")
 public class EmployeeDAOCouchDBImpl implements EmployeeDAO {
 	
 	EmployeeRepository employeeRepo;
 	private static final AtomicInteger sequenceNumber=new AtomicInteger(1);
+	private static final Logger LOG = LoggerFactory.getLogger(EmployeeDAOCouchDBImpl.class);
 	
 	@Value("#{systemProperties['NodeID'] ?: ShouldntHappen}")
-	private static String nodeID;
+	private String nodeID;
 	
 	@Autowired
 	public EmployeeDAOCouchDBImpl(@Qualifier("EmployeeRepo")EmployeeRepository repo)
@@ -32,7 +38,7 @@ public class EmployeeDAOCouchDBImpl implements EmployeeDAO {
 	@Override
 	public String createEmployee(Employee employeeToCreate) {
 		
-		employeeToCreate.employeeId=nodeID+sequenceNumber.getAndIncrement()+System.currentTimeMillis();
+		employeeToCreate.employeeId=nodeID+System.currentTimeMillis()+sequenceNumber.getAndIncrement();
 		EmployeeDocument doc=EmployeeDataTransformerService.getEmployeeDocufromEmployee(employeeToCreate);
 		employeeRepo.add(doc);
 		return employeeToCreate.employeeId;
@@ -44,7 +50,33 @@ public class EmployeeDAOCouchDBImpl implements EmployeeDAO {
 		Employee emp=EmployeeDataTransformerService.getEmployeefromDocument(doc);
 		return emp;
 	}
-	
-	
+
+	@Override
+	public Employee[] getAllEmployees() {
+		List<EmployeeDocument> docs=employeeRepo.getAll();
+		return EmployeeDataTransformerService.getEmployeesfromDocumentList(docs);
+		
+	}
+
+	@Override
+	public void deActivateEmployee(String employeeId) {
+		EmployeeDocument eDoc = employeeRepo.get(employeeId);
+		if (eDoc!= null)
+		{	eDoc.status=EmployeeStatus.INACTIVE;
+		 	employeeRepo.update(eDoc);
+		}
+		else 
+			 LOG.info("No action taken to deactivate the employee as the employee is not existing or inactive already: "+employeeId);
+		
+	}
+
+	@Override
+	public void updateEmployee(String employeeId,EmployeeToUpdate employeeToUpdate) {
+		EmployeeDocument empDoc=employeeRepo.get(employeeId);
+		empDoc=EmployeeDataTransformerService.getUpdateEmployeeDocuforUpdateEmployee(empDoc,employeeToUpdate);
+		employeeRepo.update(empDoc);
+		
+	}
+
 
 }

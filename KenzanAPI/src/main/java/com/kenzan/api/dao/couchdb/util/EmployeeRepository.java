@@ -6,9 +6,10 @@ import java.io.Reader;
 
 import org.ektorp.CouchDbConnector;
 import org.ektorp.UpdateConflictException;
+import org.ektorp.ViewQuery;
 import org.ektorp.dataload.DataLoader;
 import org.ektorp.support.CouchDbRepositorySupport;
-import org.ektorp.support.GenerateView;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -33,11 +34,28 @@ public class EmployeeRepository extends CouchDbRepositorySupport<EmployeeDocumen
         initStandardDesignDocument();
     }
 	 
-	 @GenerateView @Override
+   @Override
 	    public java.util.List<EmployeeDocument> getAll() {
-	        org.ektorp.ViewQuery q = createQuery("all")
-	                        .includeDocs(true);
-	        return db.queryView(q, EmployeeDocument.class);
+		 ViewQuery query = new ViewQuery()
+                 .designDocId("_design/EmployeeDocument")
+                 .viewName("getAllActiveEmployee").includeDocs(true);
+                return db.queryView(query, EmployeeDocument.class);
+		  
+	    }
+
+		@Override
+	    public EmployeeDocument get(String employeeID) {
+		 ViewQuery query = new ViewQuery()
+                 .designDocId("_design/EmployeeDocument")
+                 .viewName("getAllActiveEmployee").key(employeeID).includeDocs(true);
+		 java.util.List<EmployeeDocument> employees=db.queryView(query, EmployeeDocument.class);
+		  if(employees!=null && !employees.isEmpty())
+		  {
+			  return employees.get(0);
+		  }
+		  else 
+			  return null;
+			 
 	    }
 
 	 	 
